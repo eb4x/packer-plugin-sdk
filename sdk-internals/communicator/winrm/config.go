@@ -20,4 +20,6 @@ type Config struct {
 	Https              bool
 	Insecure           bool
 	TransportDecorator func() winrm.Transporter
+	// PowerShellExecutable runs the guest-side scripts. Empty means powershell.exe.
+	PowerShellExecutable string
 }

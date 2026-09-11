@@ -268,8 +268,15 @@ type WinRM struct {
 	// requirement for basic authentication to be enabled within the target
 	// guest. Further reading for remote connection authentication can be found
 	// [here](https://msdn.microsoft.com/en-us/library/aa384295(v=vs.85).aspx).
-	WinRMUseNTLM            config.Trilean `mapstructure:"winrm_use_ntlm"`
-	WinRMTransportDecorator func() winrm.Transporter
+	WinRMUseNTLM config.Trilean `mapstructure:"winrm_use_ntlm"`
+	// The PowerShell executable that runs the connection check and the
+	// file transfers on the guest. This defaults to `powershell.exe`.
+	// Give a name on the guest's `PATH` or a full path, for example
+	// `pwsh.exe`; a path with spaces is quoted, flags are not supported.
+	// (The executable must already exist on the guest because the
+	// connection check runs it before any provisioner can install it.)
+	WinRMPowerShellExecutable string `mapstructure:"winrm_powershell_exe"`
+	WinRMTransportDecorator   func() winrm.Transporter
 }
 
 // The ConfigSpec funcs are used by the Packer core to parse HCL2 templates.

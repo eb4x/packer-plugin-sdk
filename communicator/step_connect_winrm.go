@@ -158,15 +158,16 @@ func (s *StepConnectWinRM) waitForWinRM(state multistep.StateBag, ctx context.Co
 
 		log.Println("[INFO] Attempting WinRM connection...")
 		comm, err = winrm.New(&winrm.Config{
-			Host:               host,
-			Port:               port,
-			Username:           user,
-			Password:           password,
-			Timeout:            s.Config.WinRMTimeout,
-			ConnectTimeout:     s.Config.WinRMConnectTimeout,
-			Https:              s.Config.WinRMUseSSL,
-			Insecure:           s.Config.WinRMInsecure,
-			TransportDecorator: s.Config.WinRMTransportDecorator,
+			Host:                 host,
+			Port:                 port,
+			Username:             user,
+			Password:             password,
+			Timeout:              s.Config.WinRMTimeout,
+			ConnectTimeout:       s.Config.WinRMConnectTimeout,
+			Https:                s.Config.WinRMUseSSL,
+			Insecure:             s.Config.WinRMInsecure,
+			TransportDecorator:   s.Config.WinRMTransportDecorator,
+			PowerShellExecutable: s.Config.WinRMPowerShellExecutable,
 		})
 		if err != nil {
 			log.Printf("[ERROR] WinRM connection err: %s", err)
@@ -176,7 +177,7 @@ func (s *StepConnectWinRM) waitForWinRM(state multistep.StateBag, ctx context.Co
 		break
 	}
 	// run an "echo" command to make sure winrm is actually connected before moving on.
-	var connectCheckCommand = winrmcmd.Powershell(`if (Test-Path variable:global:ProgressPreference){$ProgressPreference='SilentlyContinue'}; echo "WinRM connected."`)
+	var connectCheckCommand = winrm.PowerShellCommand(s.Config.WinRMPowerShellExecutable, `if (Test-Path variable:global:ProgressPreference){$ProgressPreference='SilentlyContinue'}; echo "WinRM connected."`)
 	var retryableSleep = s.Config.WinRMRetryInterval
 	// run an "echo" command to make sure that the winrm is connected
 	for {

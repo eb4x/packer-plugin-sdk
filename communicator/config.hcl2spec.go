@@ -61,6 +61,7 @@ type FlatConfig struct {
 	WinRMUseSSL               *bool    `mapstructure:"winrm_use_ssl" cty:"winrm_use_ssl" hcl:"winrm_use_ssl"`
 	WinRMInsecure             *bool    `mapstructure:"winrm_insecure" cty:"winrm_insecure" hcl:"winrm_insecure"`
 	WinRMUseNTLM              *bool    `mapstructure:"winrm_use_ntlm" cty:"winrm_use_ntlm" hcl:"winrm_use_ntlm"`
+	WinRMPowerShellExecutable *string  `mapstructure:"winrm_powershell_exe" cty:"winrm_powershell_exe" hcl:"winrm_powershell_exe"`
 }
 
 // FlatMapstructure returns a new FlatConfig.
@@ -126,6 +127,7 @@ func (*FlatConfig) HCL2Spec() map[string]hcldec.Spec {
 		"winrm_use_ssl":                &hcldec.AttrSpec{Name: "winrm_use_ssl", Type: cty.Bool, Required: false},
 		"winrm_insecure":               &hcldec.AttrSpec{Name: "winrm_insecure", Type: cty.Bool, Required: false},
 		"winrm_use_ntlm":               &hcldec.AttrSpec{Name: "winrm_use_ntlm", Type: cty.Bool, Required: false},
+		"winrm_powershell_exe":         &hcldec.AttrSpec{Name: "winrm_powershell_exe", Type: cty.String, Required: false},
 	}
 	return s
 }
@@ -255,17 +257,18 @@ func (*FlatSSHTemporaryKeyPair) HCL2Spec() map[string]hcldec.Spec {
 // FlatWinRM is an auto-generated flat version of WinRM.
 // Where the contents of a field with a `mapstructure:,squash` tag are bubbled up.
 type FlatWinRM struct {
-	WinRMUser           *string `mapstructure:"winrm_username" cty:"winrm_username" hcl:"winrm_username"`
-	WinRMPassword       *string `mapstructure:"winrm_password" cty:"winrm_password" hcl:"winrm_password"`
-	WinRMHost           *string `mapstructure:"winrm_host" cty:"winrm_host" hcl:"winrm_host"`
-	WinRMNoProxy        *bool   `mapstructure:"winrm_no_proxy" cty:"winrm_no_proxy" hcl:"winrm_no_proxy"`
-	WinRMPort           *int    `mapstructure:"winrm_port" cty:"winrm_port" hcl:"winrm_port"`
-	WinRMTimeout        *string `mapstructure:"winrm_timeout" cty:"winrm_timeout" hcl:"winrm_timeout"`
-	WinRMRetryInterval  *string `mapstructure:"winrm_retry_interval" cty:"winrm_retry_interval" hcl:"winrm_retry_interval"`
-	WinRMConnectTimeout *string `mapstructure:"winrm_connect_timeout" cty:"winrm_connect_timeout" hcl:"winrm_connect_timeout"`
-	WinRMUseSSL         *bool   `mapstructure:"winrm_use_ssl" cty:"winrm_use_ssl" hcl:"winrm_use_ssl"`
-	WinRMInsecure       *bool   `mapstructure:"winrm_insecure" cty:"winrm_insecure" hcl:"winrm_insecure"`
-	WinRMUseNTLM        *bool   `mapstructure:"winrm_use_ntlm" cty:"winrm_use_ntlm" hcl:"winrm_use_ntlm"`
+	WinRMUser                 *string `mapstructure:"winrm_username" cty:"winrm_username" hcl:"winrm_username"`
+	WinRMPassword             *string `mapstructure:"winrm_password" cty:"winrm_password" hcl:"winrm_password"`
+	WinRMHost                 *string `mapstructure:"winrm_host" cty:"winrm_host" hcl:"winrm_host"`
+	WinRMNoProxy              *bool   `mapstructure:"winrm_no_proxy" cty:"winrm_no_proxy" hcl:"winrm_no_proxy"`
+	WinRMPort                 *int    `mapstructure:"winrm_port" cty:"winrm_port" hcl:"winrm_port"`
+	WinRMTimeout              *string `mapstructure:"winrm_timeout" cty:"winrm_timeout" hcl:"winrm_timeout"`
+	WinRMRetryInterval        *string `mapstructure:"winrm_retry_interval" cty:"winrm_retry_interval" hcl:"winrm_retry_interval"`
+	WinRMConnectTimeout       *string `mapstructure:"winrm_connect_timeout" cty:"winrm_connect_timeout" hcl:"winrm_connect_timeout"`
+	WinRMUseSSL               *bool   `mapstructure:"winrm_use_ssl" cty:"winrm_use_ssl" hcl:"winrm_use_ssl"`
+	WinRMInsecure             *bool   `mapstructure:"winrm_insecure" cty:"winrm_insecure" hcl:"winrm_insecure"`
+	WinRMUseNTLM              *bool   `mapstructure:"winrm_use_ntlm" cty:"winrm_use_ntlm" hcl:"winrm_use_ntlm"`
+	WinRMPowerShellExecutable *string `mapstructure:"winrm_powershell_exe" cty:"winrm_powershell_exe" hcl:"winrm_powershell_exe"`
 }
 
 // FlatMapstructure returns a new FlatWinRM.
@@ -291,6 +294,7 @@ func (*FlatWinRM) HCL2Spec() map[string]hcldec.Spec {
 		"winrm_use_ssl":         &hcldec.AttrSpec{Name: "winrm_use_ssl", Type: cty.Bool, Required: false},
 		"winrm_insecure":        &hcldec.AttrSpec{Name: "winrm_insecure", Type: cty.Bool, Required: false},
 		"winrm_use_ntlm":        &hcldec.AttrSpec{Name: "winrm_use_ntlm", Type: cty.Bool, Required: false},
+		"winrm_powershell_exe":  &hcldec.AttrSpec{Name: "winrm_powershell_exe", Type: cty.String, Required: false},
 	}
 	return s
 }

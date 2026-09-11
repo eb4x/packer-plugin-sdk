@@ -201,7 +201,7 @@ func (c *Communicator) runPowerShell(script string) error {
 	}
 	defer shell.Close()
 
-	return runInShell(shell, winrm.Powershell(script))
+	return runInShell(shell, PowerShellCommand(c.config.PowerShellExecutable, script))
 }
 
 // runInShell drains both output pipes, or the command would block.
