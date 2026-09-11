@@ -5,6 +5,7 @@ package guestexec
 
 import (
 	"regexp"
+	"strings"
 	"testing"
 
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
@@ -37,5 +38,41 @@ func TestProvisioner_GenerateElevatedRunner(t *testing.T) {
 	matched, _ := regexp.MatchString("C:/Windows/Temp/packer-elevated-shell.*", path)
 	if !matched {
 		t.Fatalf("Got unexpected file: %s", path)
+	}
+
+	// A provisioner without PowerShellExecutableProvisioner keeps the
+	// default executable.
+	if !strings.HasPrefix(path, "powershell.exe ") {
+		t.Fatalf("Expected powershell prefix, got: %s", path)
+	}
+}
+
+type mockExeProvisioner struct {
+	*packersdk.MockProvisioner
+	exe string
+}
+
+func (p *mockExeProvisioner) PowerShellExecutable() string {
+	return p.exe
+}
+
+func TestProvisioner_GenerateElevatedRunner_executable(t *testing.T) {
+	mock := new(packersdk.MockProvisioner)
+	mock.Prepare(testConfig())
+	mock.ProvCommunicator = new(packersdk.MockCommunicator)
+
+	for exe, wantPrefix := range map[string]string{
+		"pwsh":                                   `pwsh -executionpolicy bypass -file "C:/Windows/Temp/packer-elevated-shell-`,
+		"":                                       `powershell.exe -executionpolicy bypass -file "C:/Windows/Temp/packer-elevated-shell-`,
+		`C:\Program Files\PowerShell\7\pwsh.exe`: `"C:\Program Files\PowerShell\7\pwsh.exe" -executionpolicy bypass -file "C:/Windows/Temp/packer-elevated-shell-`,
+	} {
+		p := &mockExeProvisioner{MockProvisioner: mock, exe: exe}
+		cmd, err := GenerateElevatedRunner("whoami", p)
+		if err != nil {
+			t.Fatalf("Did not expect error: %s", err.Error())
+		}
+		if !strings.HasPrefix(cmd, wantPrefix) {
+			t.Fatalf("PowerShellExecutable %q: expected prefix %q, got: %s", exe, wantPrefix, cmd)
+		}
 	}
 }

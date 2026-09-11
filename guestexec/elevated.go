@@ -5,6 +5,7 @@ package guestexec
 
 import (
 	"bytes"
+	"cmp"
 	"encoding/xml"
 	"fmt"
 	"log"
@@ -19,6 +20,13 @@ type ElevatedProvisioner interface {
 	Communicator() packersdk.Communicator
 	ElevatedUser() string
 	ElevatedPassword() string
+}
+
+// PowerShellExecutableProvisioner is an optional interface for an
+// ElevatedProvisioner. PowerShellExecutable names the executable that runs the
+// elevated wrapper script. Empty means "powershell.exe".
+type PowerShellExecutableProvisioner interface {
+	PowerShellExecutable() string
 }
 
 type elevatedOptions struct {
@@ -202,5 +210,9 @@ func GenerateElevatedRunner(command string, p ElevatedProvisioner) (uploadedPath
 		return "", fmt.Errorf("Error preparing elevated powershell script: %s", err)
 	}
 
-	return fmt.Sprintf("powershell -executionpolicy bypass -file \"%s\"", path), err
+	exe := "powershell.exe"
+	if pp, ok := p.(PowerShellExecutableProvisioner); ok {
+		exe = cmp.Or(pp.PowerShellExecutable(), exe)
+	}
+	return fmt.Sprintf("%s -executionpolicy bypass -file \"%s\"", quoteExe(exe), path), err
 }
