@@ -196,3 +196,22 @@ func TestMovePath(t *testing.T) {
 		t.Fatalf("Unexpected Windows remove dir cmd: %s", cmd)
 	}
 }
+
+func TestPowerShellExecutable(t *testing.T) {
+	guestCmd, err := NewGuestCommands(WindowsOSType, false)
+	if err != nil {
+		t.Fatalf("Failed to create new GuestCommands for OS: %s", WindowsOSType)
+	}
+	guestCmd.PowerShellExecutable = "pwsh"
+	cmd := guestCmd.CreateDir("C:\\Temp\\TempDir")
+	if cmd != "pwsh -Command \"New-Item -ItemType directory -Force -ErrorAction SilentlyContinue -Path C:\\Temp\\TempDir\"" {
+		t.Fatalf("Unexpected Windows create dir cmd: %s", cmd)
+	}
+
+	// An executable path with spaces is quoted.
+	guestCmd.PowerShellExecutable = "C:\\Program Files\\PowerShell\\7\\pwsh.exe"
+	cmd = guestCmd.StatPath("C:\\Temp\\TempDir")
+	if cmd != "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -Command { if (test-path C:\\Temp\\TempDir) { exit 0 } else { exit 1 } }" {
+		t.Fatalf("Unexpected Windows stat cmd: %s", cmd)
+	}
+}
